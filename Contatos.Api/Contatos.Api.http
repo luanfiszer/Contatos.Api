@@ -1,6 +1,0 @@
-@Contatos.Api_HostAddress = http://localhost:5202
-
-GET {{Contatos.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

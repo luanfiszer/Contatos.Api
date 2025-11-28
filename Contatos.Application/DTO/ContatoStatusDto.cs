@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Contatos.Application.DTO
 {
-    public  class ContatoPatchAtivoDto
+    public  class ContatoStatusDto
     {
         public bool Ativo { get; set; }
     }

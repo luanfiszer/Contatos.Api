@@ -18,7 +18,7 @@ namespace Contatos.Api.Controllers
             _service = service;
         }
 
-        [HttpGet("ativos")]
+        [HttpGet("obter-ativos")]
         [ProducesResponseType(typeof(IEnumerable<ContatoDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> ObterAtivos()
         {
@@ -26,8 +26,8 @@ namespace Contatos.Api.Controllers
             return Ok(Result<IEnumerable<ContatoDto>>.Ok(contatos));
         }
 
-        [HttpGet("{id:guid}")]
-        [ProducesResponseType(typeof(ContatoDto), StatusCodes.Status200OK)]
+        [HttpGet("obter-ativo{id:guid}")]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ObterPorId(Guid id)
         {
@@ -35,8 +35,8 @@ namespace Contatos.Api.Controllers
             return Ok(Result<ContatoDto>.Ok(dto));
         }
 
-        [HttpPost]
-        [ProducesResponseType(typeof(ContatoDto), StatusCodes.Status201Created)]
+        [HttpPost("criar")]
+        [ProducesResponseType(typeof(Result), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Criar([FromBody] ContatoCreateDto dto)
         {
@@ -49,7 +49,7 @@ namespace Contatos.Api.Controllers
             );
         }
 
-        [HttpPut("{id:guid}")]
+        [HttpPut("atualizar/{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Atualizar(Guid id, [FromBody] ContatoUpdateDto dto)
@@ -58,7 +58,7 @@ namespace Contatos.Api.Controllers
             return Ok(Result.Ok("Contato atualizado com sucesso"));
         }
 
-        [HttpDelete("{id:guid}")]
+        [HttpDelete("remover/{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Remover(Guid id)
@@ -70,9 +70,9 @@ namespace Contatos.Api.Controllers
         [HttpPatch("{id:guid}/ativo")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> PatchAtivo(Guid id, [FromBody] ContatoPatchAtivoDto dto)
+        public async Task<IActionResult> AlterarStatus(Guid id)
         {
-            await _service.AlterarStatusAsync(id, dto.Ativo);
+            await _service.AlterarStatusAsync(id);
             return Ok(Result.Ok("Status de ativo atualizado com sucesso"));
         }
 

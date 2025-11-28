@@ -43,18 +43,24 @@ namespace Contatos.Domain.Entity
 
         private static void Validar(string nome, DateTime dataNascimento, char? sexo)
         {
-            if (string.IsNullOrEmpty(nome))
-                throw new ArgumentNullException("O nome do contato não pode ser vazio");
+            if (string.IsNullOrWhiteSpace(nome))
+                throw new ArgumentNullException("O nome do contato não pode ser vazio.");
 
-            if (dataNascimento > DateTime.Now)
-                throw new ArgumentException("A data não pode ser maior que a data atual");
+            if (dataNascimento > DateTime.Today)
+                throw new ArgumentException("A data de nascimento não pode ser maior que a data atual.");
 
-            if (dataNascimento < DateTime.MinValue)
-                throw new ArgumentException("Data de nascimento inválida");
+            var idade = CalcularIdade(dataNascimento);
 
-            if (CalcularIdade(dataNascimento) < 18)
-                throw new ArgumentException("O contato deve ser maior de idade");
+            if (idade <= 0)
+                throw new ArgumentException("A idade não pode ser igual a 0.");
+
+            if (idade < 18)
+                throw new ArgumentException("O contato deve ser maior de idade (>= 18).");
+
+            if (sexo.HasValue && sexo != 'M' && sexo != 'F')
+                throw new ArgumentException("Sexo deve ser 'M', 'F' ou nulo.");
         }
+
 
 
         private static int CalcularIdade(DateTime dataNascimento)

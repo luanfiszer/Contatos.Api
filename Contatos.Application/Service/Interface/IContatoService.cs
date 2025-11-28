@@ -14,6 +14,6 @@ namespace Contatos.Application.Service.Interface
         Task<ContatoDto> CriarAsync(ContatoCreateDto dto);
         Task AtualizarAsync(Guid id, ContatoUpdateDto dto);
         Task RemoverAsync(Guid id);
-        Task AlterarStatusAsync(Guid id, bool ativo);
+        Task AlterarStatusAsync(Guid id);
     }
 }

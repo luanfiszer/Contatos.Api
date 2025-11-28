@@ -21,18 +21,18 @@ namespace Contatos.Data.Repository
         }
         public async Task AdicionarAsync(Contato contato)
         {
-            await _context.Contato.AddAsync(contato);
+            await _context.Contatos.AddAsync(contato);
         }
 
         public Task AtualizarAsync(Contato contato)
         {
-            _context.Contato.Update(contato);
+            _context.Contatos.Update(contato);
             return Task.CompletedTask;
         }
 
         public async Task<Contato?> ObterAtivoPorIdAsync(Guid id)
         {
-            var contato = await _context.Contato
+            var contato = await _context.Contatos
                 .Where(c => c.Ativo)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
@@ -41,7 +41,7 @@ namespace Contatos.Data.Repository
 
         public async Task<IEnumerable<Contato>> ObterAtivosAsync()
         {
-            var contatos = await _context.Contato
+            var contatos = await _context.Contatos
                 .Where(c => c.Ativo)
                 .OrderBy(c => c.Nome)
                 .AsNoTracking()
@@ -54,7 +54,7 @@ namespace Contatos.Data.Repository
         {
             var contato = await ObterAtivoPorIdAsync(id);
             if (contato != null)
-                _context.Contato.Remove(contato);
+                _context.Contatos.Remove(contato);
         }
 
         public async Task SalvarAsync()
