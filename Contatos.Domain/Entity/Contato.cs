@@ -7,7 +7,6 @@ namespace Contatos.Domain.Entity
         public DateTime DataNascimento { get; private set; }
         public char? Sexo { get; private set; }
         public bool Ativo { get; private set; }
-        [NotMapped]
         public int Idade => CalcularIdade(DataNascimento);
 
         protected Contato() { }
@@ -37,8 +36,6 @@ namespace Contatos.Domain.Entity
             Nome = nome;
             DataNascimento = dataNascimento;
             Sexo = sexo;
-
-            return;
         }
 
         private static void Validar(string nome, DateTime dataNascimento, char? sexo)
@@ -61,13 +58,14 @@ namespace Contatos.Domain.Entity
                 throw new ArgumentException("Sexo deve ser 'M', 'F' ou nulo.");
         }
 
-
-
         private static int CalcularIdade(DateTime dataNascimento)
         {
             var hoje = DateTime.Now;
             var idade = hoje.Year - dataNascimento.Year;
-            idade -= dataNascimento.Date > hoje.AddYears(-idade) ? 1 : 0;
+            if (dataNascimento.Date > hoje.AddYears(-idade))
+            {
+                idade -= 1;
+            }
 
             return idade;
         }

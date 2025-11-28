@@ -4,11 +4,11 @@ namespace Contatos.Domain.Interface
 {
     public interface IContatoRepository
     {
-        Task<IEnumerable<Contato>> ObterAtivosAsync();
-        Task<Contato?> ObterAtivoPorIdAsync(Guid id);
-        Task AdicionarAsync(Contato contato);
+        Task<IEnumerable<Contato>> ObterTodosAsync();
+        Task<Contato> ObterPorIdAsync(Guid id);
+        Task Adicionar(Contato contato);
         Task AtualizarAsync(Contato contato);
-        Task RemoverAsync(Guid id);
+        Task RemoverAsync(Contato contato);
         Task SalvarAsync();
     }
 }

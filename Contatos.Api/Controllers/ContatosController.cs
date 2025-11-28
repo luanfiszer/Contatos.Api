@@ -1,46 +1,44 @@
 ﻿using Contatos.Api.Results;
 using Contatos.Application.Dto;
-using Contatos.Application.DTO;
 using Contatos.Application.Service.Interface;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Contatos.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ContatoController : ControllerBase
+    public class ContatosController : ControllerBase
     {
-        private readonly IContatoService _service;
+        private readonly IContatoService _contatoService;
 
-        public ContatoController(IContatoService service)
+        public ContatosController(IContatoService contatoService)
         {
-            _service = service;
+            _contatoService = contatoService;
         }
 
-        [HttpGet("obter-ativos")]
+        [HttpGet()]
         [ProducesResponseType(typeof(IEnumerable<ContatoDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> ObterAtivos()
+        public async Task<IActionResult> Listar()
         {
-            var contatos = await _service.ObterTodosAsync();
+            var contatos = await _contatoService.ListarAsync();
             return Ok(Result<IEnumerable<ContatoDto>>.Ok(contatos));
         }
 
-        [HttpGet("obter-ativo{id:guid}")]
+        [HttpGet("{id:guid}")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ObterPorId(Guid id)
         {
-            var dto = await _service.ObterPorIdAsync(id);
+            var dto = await _contatoService.ObterPorIdAsync(id);
             return Ok(Result<ContatoDto>.Ok(dto));
         }
 
-        [HttpPost("criar")]
+        [HttpPost()]
         [ProducesResponseType(typeof(Result), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Criar([FromBody] ContatoCreateDto dto)
         {
-            var contato = await _service.CriarAsync(dto);
+            var contato = await _contatoService.CriarAsync(dto);
 
             return CreatedAtAction(
                 nameof(ObterPorId),
@@ -49,31 +47,31 @@ namespace Contatos.Api.Controllers
             );
         }
 
-        [HttpPut("atualizar/{id:guid}")]
+        [HttpPut("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Atualizar(Guid id, [FromBody] ContatoUpdateDto dto)
         {
-            await _service.AtualizarAsync(id, dto);
+            await _contatoService.AtualizarAsync(id, dto);
             return Ok(Result.Ok("Contato atualizado com sucesso"));
         }
 
-        [HttpDelete("remover/{id:guid}")]
+        [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Remover(Guid id)
         {
-            await _service.RemoverAsync(id);
+            await _contatoService.RemoverAsync(id);
             return Ok(Result.Ok("Contato removido com sucesso"));
         }
 
-        [HttpPatch("{id:guid}/ativo")]
+        [HttpPatch("Ativos/{id:guid}")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> AlterarStatus(Guid id)
         {
-            await _service.AlterarStatusAsync(id);
-            return Ok(Result.Ok("Status de ativo atualizado com sucesso"));
+            await _contatoService.AlterarStatusAsync(id);
+            return Ok(Result.Ok("Status atualizado com sucesso"));
         }
 
     }

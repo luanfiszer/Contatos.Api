@@ -9,7 +9,7 @@ namespace Contatos.Application.Service.Interface
 {
     public interface IContatoService
     {
-        Task<IEnumerable<ContatoDto>> ObterTodosAsync();
+        Task<IEnumerable<ContatoDto>> ListarAsync();
         Task<ContatoDto> ObterPorIdAsync(Guid id);
         Task<ContatoDto> CriarAsync(ContatoCreateDto dto);
         Task AtualizarAsync(Guid id, ContatoUpdateDto dto);

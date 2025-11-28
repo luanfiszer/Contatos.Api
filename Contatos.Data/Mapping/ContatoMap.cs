@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Contatos.Data.Mappings
+namespace Contatos.Data.Mapping
 {
     public class ContatoMap : IEntityTypeConfiguration<Contato>
     {

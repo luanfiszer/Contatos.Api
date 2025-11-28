@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Contatos.Domain.Entity
 {
-    public class Entity
+    public abstract class Entity
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; protected set; }
 
-        public Entity()
+        protected Entity()
         {
             Id = Guid.NewGuid();
         }
