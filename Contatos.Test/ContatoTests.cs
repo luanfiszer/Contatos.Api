@@ -24,9 +24,10 @@ namespace Contatos.Test
         {
             var nascimento = DateTime.Today.AddYears(-17);
 
-            Assert.Throws<ArgumentException>(() =>
+            var exception = Assert.Throws<ArgumentException>(() =>
                 Contato.Criar("Maria", nascimento, 'F')
             );
+            Assert.Equal("O contato deve ser maior de idade (>= 18).", exception.Message);
         }
 
         [Fact]
@@ -34,29 +35,36 @@ namespace Contatos.Test
         {
             var nascimento = DateTime.Today;
 
-            Assert.Throws<ArgumentException>(() =>
+            var exception = Assert.Throws<ArgumentException>(() =>
                 Contato.Criar("Carlos", nascimento, 'M')
             );
+            Assert.Equal("A idade não pode ser igual a 0.", exception.Message);
         }
 
         [Fact]
         public void CriarContato_ComDataFutura_DeveLancarErro()
         {
+            // Arrange
             var nascimento = DateTime.Today.AddDays(1);
 
-            Assert.Throws<ArgumentException>(() =>
+            // Act & Assert
+            var exception = Assert.Throws<ArgumentException>(() =>
                 Contato.Criar("Ana", nascimento, 'F')
             );
+
+            Assert.Equal("A data de nascimento não pode ser maior que a data atual.", exception.Message);
         }
+
 
         [Fact]
         public void CriarContato_ComNomeVazio_DeveLancarErro()
         {
             var nascimento = DateTime.Today.AddYears(-30);
 
-            Assert.Throws<ArgumentNullException>(() =>
+            var exception = Assert.Throws<ArgumentException>(() =>
                 Contato.Criar("", nascimento, 'M')
             );
+            Assert.Equal("O nome do contato não pode ser vazio.", exception.Message);
         }
 
         [Fact]
@@ -64,9 +72,11 @@ namespace Contatos.Test
         {
             var nascimento = DateTime.Today.AddYears(-20);
 
-            Assert.Throws<ArgumentException>(() =>
+            var exception = Assert.Throws<ArgumentException>(() =>
                 Contato.Criar("Juliana", nascimento, 'X')
             );
+            Assert.Equal("Sexo deve ser 'M', 'F' ou nulo.", exception.Message);
+
         }
 
         [Fact]

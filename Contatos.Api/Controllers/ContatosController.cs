@@ -16,12 +16,12 @@ namespace Contatos.Api.Controllers
             _contatoService = contatoService;
         }
 
-        [HttpGet()]
+        [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ContatoDto>), StatusCodes.Status200OK)]
         public async Task<IActionResult> Listar()
         {
-            var contatos = await _contatoService.ListarAsync();
-            return Ok(Result<IEnumerable<ContatoDto>>.Ok(contatos));
+            var result = await _contatoService.ListarAsync();
+            return StatusCode((int)result.StatusCode, result);
         }
 
         [HttpGet("{id:guid}")]
@@ -29,49 +29,44 @@ namespace Contatos.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ObterPorId(Guid id)
         {
-            var dto = await _contatoService.ObterPorIdAsync(id);
-            return Ok(Result<ContatoDto>.Ok(dto));
+            var result = await _contatoService.ObterPorIdAsync(id);
+            return StatusCode((int)result.StatusCode, result);
         }
 
-        [HttpPost()]
+        [HttpPost]
         [ProducesResponseType(typeof(Result), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Criar([FromBody] ContatoCreateDto dto)
+        public async Task<IActionResult> Criar([FromBody] ContatoRequestDto dto)
         {
-            var contato = await _contatoService.CriarAsync(dto);
-
-            return CreatedAtAction(
-                nameof(ObterPorId),
-                new { id = contato.Id },
-                Result<ContatoDto>.Ok(contato, "Contato criado com sucesso")
-            );
+            var result = await _contatoService.CriarAsync(dto);
+            return StatusCode((int)result.StatusCode, result);
         }
 
         [HttpPut("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Atualizar(Guid id, [FromBody] ContatoUpdateDto dto)
+        public async Task<IActionResult> Atualizar(Guid id, [FromBody] ContatoRequestDto dto)
         {
-            await _contatoService.AtualizarAsync(id, dto);
-            return Ok(Result.Ok("Contato atualizado com sucesso"));
+            var result = await _contatoService.AtualizarAsync(id, dto);
+            return StatusCode((int)result.StatusCode, result);
         }
 
         [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Remover(Guid id)
+        public async Task<IActionResult> Remover([FromRoute]Guid id)
         {
-            await _contatoService.RemoverAsync(id);
-            return Ok(Result.Ok("Contato removido com sucesso"));
+            var result = await _contatoService.RemoverAsync(id);
+            return StatusCode((int)result.StatusCode, result);
         }
 
         [HttpPatch("Ativos/{id:guid}")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> AlterarStatus(Guid id)
+        public async Task<IActionResult> AlterarStatus([FromRoute] Guid id)
         {
-            await _contatoService.AlterarStatusAsync(id);
-            return Ok(Result.Ok("Status atualizado com sucesso"));
+            var result = await _contatoService.AlterarStatusAsync(id);
+            return StatusCode((int)result.StatusCode, result);
         }
 
     }

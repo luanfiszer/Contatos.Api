@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Contatos.Api.Results;
 using Contatos.Application.Dto;
 using Contatos.Application.Service.Interface;
 using Contatos.Domain.Entity;
@@ -17,69 +18,91 @@ namespace Contatos.Application.Service
             _mapper = mapper;
         }
 
-        public async Task<ContatoDto> CriarAsync(ContatoCreateDto dto)
+        public async Task<Result<ContatoDto>> CriarAsync(ContatoRequestDto dto)
         {
-            var contato = Contato.Criar(dto.Nome, dto.DataNascimento, dto.Sexo);
+            try
+            {
+                var contato = Contato.Criar(dto.Nome, dto.DataNascimento, dto.Sexo);
 
-            await _contatoRepository.Adicionar(contato);
-            await _contatoRepository.SalvarAsync();
+                await _contatoRepository.Adicionar(contato);
+                await _contatoRepository.SalvarAsync();
 
-            return _mapper.Map<ContatoDto>(contato);
+                return Result<ContatoDto>.Ok(_mapper.Map<ContatoDto>(contato));
+            }
+            catch(Exception ex)
+            {
+                return Result<ContatoDto>.BusinessError(ex.Message);
+            }
         }
 
-        public async Task<IEnumerable<ContatoDto>> ListarAsync()
+        public async Task<Result<IEnumerable<ContatoDto>>> ListarAsync()
         {
-            var contatos = await _contatoRepository.ObterTodosAsync();
+            var contatos = await _contatoRepository.ObterTodosAsync(c => c.Ativo);
 
-            if (contatos == null)
-                throw new KeyNotFoundException("Contatos não encontrados.");
+            if (contatos.Count() == 0)
+                return Result<IEnumerable<ContatoDto>>.NotFound("Contatos não encontrados.");
 
-            return _mapper.Map<IEnumerable<ContatoDto>>(contatos);
+            return Result<IEnumerable<ContatoDto>>.Ok(_mapper.Map<IEnumerable<ContatoDto>>(contatos));
         }
 
-        public async Task<ContatoDto> ObterPorIdAsync(Guid id)
+        public async Task<Result<ContatoDto>> ObterPorIdAsync(Guid id)
         {
-            var contato = await _contatoRepository.ObterPorIdAsync(id);
-
-            if (contato == null || !contato.Ativo)
-                throw new KeyNotFoundException("Contato não encontrado ou está inativo.");
-
-            return _mapper.Map<ContatoDto>(contato);
-        }
-
-        public async Task AtualizarAsync(Guid id, ContatoUpdateDto dto)
-        {
-            var contato = await _contatoRepository.ObterPorIdAsync(id);
+            var contato = await _contatoRepository.ObterAsync(c => c.Id == id && c.Ativo);
 
             if (contato == null)
-                throw new KeyNotFoundException("Contato não encontrado.");
+                return Result<ContatoDto>.NotFound("Contato não encontrado.");
 
-            contato.Atualizar(dto.Nome, dto.DataNascimento, dto.Sexo);
-
-            await _contatoRepository.SalvarAsync();
+            return Result<ContatoDto>.Ok(_mapper.Map<ContatoDto>(contato));
         }
 
-        public async Task AlterarStatusAsync(Guid id)
+
+        public async Task<Result> AtualizarAsync(Guid id, ContatoRequestDto dto)
         {
-            var contato = await _contatoRepository.ObterPorIdAsync(id);
+            try
+            {
+                var contato = await _contatoRepository.ObterAsync(c => c.Id == id && c.Ativo);
+
+                if (contato == null)
+                    return Result<ContatoDto>.NotFound("Contato não encontrado.");
+
+                contato.Atualizar(dto.Nome, dto.DataNascimento, dto.Sexo);
+
+                await _contatoRepository.SalvarAsync();
+
+                return Result.Ok("Contato atualizado com sucesso.");
+            }
+            catch(Exception ex)
+            {
+                return Result.BusinessError(ex.Message);
+            }
+           
+        }
+
+        public async Task<Result> AlterarStatusAsync(Guid id)
+        {
+            var contato = await _contatoRepository.ObterAsync(c => c.Id == id);
 
             if (contato == null)
-                throw new KeyNotFoundException("Contato não encontrado.");
+                return Result<ContatoDto>.NotFound("Contato não encontrado.");
 
             contato.AlterarStatus();
 
             await _contatoRepository.SalvarAsync();
+
+            return Result.Ok($"Status atualizado para {contato.Ativo}.");
         }
 
-        public async Task RemoverAsync(Guid id)
+        public async Task<Result> RemoverAsync(Guid id)
         {
-            var contato = await _contatoRepository.ObterPorIdAsync(id);
+            var contato = await _contatoRepository.ObterAsync(c => c.Id == id && c.Ativo);
 
             if (contato == null)
-                throw new KeyNotFoundException("Contato não encontrado.");
+                return Result<ContatoDto>.NotFound("Contato não encontrado.");
 
             await _contatoRepository.RemoverAsync(contato);
             await _contatoRepository.SalvarAsync();
+
+            return Result.Ok("Contato excluido com sucesso.");
         }
 
 

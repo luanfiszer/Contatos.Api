@@ -11,10 +11,10 @@ namespace Contatos.Application.AutoMapper
             CreateMap<Contato, ContatoDto>()
                 .ForMember(dest => dest.Idade, opt => opt.MapFrom(src => src.Idade));
 
-            CreateMap<ContatoCreateDto, Contato>()
+            CreateMap<ContatoRequestDto, Contato>()
                 .ConstructUsing(dto => Contato.Criar(dto.Nome, dto.DataNascimento, dto.Sexo));
 
-            CreateMap<ContatoUpdateDto, Contato>()
+            CreateMap<ContatoRequestDto, Contato>()
                 .AfterMap((dto, entity) =>
                 {
                     entity.Atualizar(dto.Nome, dto.DataNascimento, dto.Sexo);
