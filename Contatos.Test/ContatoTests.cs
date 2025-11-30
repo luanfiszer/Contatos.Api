@@ -44,10 +44,8 @@ namespace Contatos.Test
         [Fact]
         public void CriarContato_ComDataFutura_DeveLancarErro()
         {
-            // Arrange
             var nascimento = DateTime.Today.AddDays(1);
 
-            // Act & Assert
             var exception = Assert.Throws<ArgumentException>(() =>
                 Contato.Criar("Ana", nascimento, 'F')
             );

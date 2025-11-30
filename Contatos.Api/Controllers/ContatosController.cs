@@ -60,7 +60,7 @@ namespace Contatos.Api.Controllers
             return StatusCode((int)result.StatusCode, result);
         }
 
-        [HttpPatch("Ativos/{id:guid}")]
+        [HttpPatch("Status/{id:guid}")]
         [ProducesResponseType(typeof(Result), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(Result), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> AlterarStatus([FromRoute] Guid id)

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
-using Contatos.Data.Context;  // namespace do seu AppDbContext
+using Contatos.Data.Context;
 
 namespace Contatos.Api.Configurations
 {
