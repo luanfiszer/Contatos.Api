@@ -18,23 +18,6 @@ namespace Contatos.Application.Service
             _mapper = mapper;
         }
 
-        public async Task<Result<ContatoDto>> CriarAsync(ContatoRequestDto dto)
-        {
-            try
-            {
-                var contato = Contato.Criar(dto.Nome, dto.DataNascimento, dto.Sexo);
-
-                await _contatoRepository.Adicionar(contato);
-                await _contatoRepository.SalvarAsync();
-
-                return Result<ContatoDto>.Ok(_mapper.Map<ContatoDto>(contato));
-            }
-            catch(Exception ex)
-            {
-                return Result<ContatoDto>.BusinessError(ex.Message);
-            }
-        }
-
         public async Task<Result<IEnumerable<ContatoDto>>> ListarAsync()
         {
             var contatos = await _contatoRepository.ObterTodosAsync(c => c.Ativo);
@@ -55,6 +38,22 @@ namespace Contatos.Application.Service
             return Result<ContatoDto>.Ok(_mapper.Map<ContatoDto>(contato));
         }
 
+        public async Task<Result<ContatoDto>> CriarAsync(ContatoRequestDto dto)
+        {
+            try
+            {
+                var contato = Contato.Criar(dto.Nome, dto.DataNascimento, dto.Sexo);
+
+                await _contatoRepository.Adicionar(contato);
+                await _contatoRepository.SalvarAsync();
+
+                return Result<ContatoDto>.Ok(_mapper.Map<ContatoDto>(contato));
+            }
+            catch (Exception ex)
+            {
+                return Result<ContatoDto>.BusinessError(ex.Message);
+            }
+        }
 
         public async Task<Result> AtualizarAsync(Guid id, ContatoRequestDto dto)
         {
